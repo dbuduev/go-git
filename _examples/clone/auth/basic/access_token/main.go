@@ -4,14 +4,15 @@ import (
 	"fmt"
 	"os"
 
-	git "github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5"
 	. "github.com/go-git/go-git/v5/_examples"
 	"github.com/go-git/go-git/v5/plumbing/transport/http"
+	"github.com/go-git/go-git/v5/plumbing"
 )
 
 func main() {
-	CheckArgs("<url>", "<directory>", "<github_access_token>")
-	url, directory, token := os.Args[1], os.Args[2], os.Args[3]
+	CheckArgs("<url>", "<directory>", "<github_access_token> <branch>")
+	url, directory, token, branch := os.Args[1], os.Args[2], os.Args[3], os.Args[4]
 
 	// Clone the given repository to the given directory
 	Info("git clone %s %s", url, directory)
@@ -24,8 +25,10 @@ func main() {
 			Username: "abc123", // yes, this can be anything except an empty string
 			Password: token,
 		},
-		URL:      url,
-		Progress: os.Stdout,
+		URL:           url,
+		ReferenceName: plumbing.NewBranchReferenceName(branch),
+		SingleBranch:  true,
+		Progress:      os.Stdout,
 	})
 	CheckIfError(err)
 
